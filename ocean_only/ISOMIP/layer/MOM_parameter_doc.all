@@ -52,11 +52,11 @@ BATHYMETRY_AT_VEL = False       !   [Boolean] default = False
                                 ! If true, there are separate values for the basin depths at velocity points.
                                 ! Otherwise the effects of topography are entirely determined from thickness
                                 ! points.
-DT = 300.0                      !   [s]
+DT = 10.0                       !   [s]
                                 ! The (baroclinic) dynamics time step.  The time-step that is actually used will
                                 ! be an integer fraction of the forcing time-step (DT_FORCING in ocean-only mode
                                 ! or the coupling timestep in coupled mode.)
-DT_THERM = 300.0                !   [s] default = 300.0
+DT_THERM = 10.0                 !   [s] default = 10.0
                                 ! The thermodynamic and tracer advection time step. Ideally DT_THERM should be
                                 ! an integer multiple of DT and less than the forcing or coupling time-step,
                                 ! unless THERMO_SPANS_COUPLING is true, in which case DT_THERM can be an integer
@@ -82,7 +82,7 @@ HFREEZE = -1.0                  !   [m] default = -1.0
 INTERPOLATE_P_SURF = False      !   [Boolean] default = False
                                 ! If true, linearly interpolate the surface pressure over the coupling time
                                 ! step, using the specified value at the end of the step.
-DTBT_RESET_PERIOD = 0.0         !   [s] default = 300.0
+DTBT_RESET_PERIOD = 0.0         !   [s] default = 10.0
                                 ! The period between recalculations of DTBT (if DTBT <= 0). If DTBT_RESET_PERIOD
                                 ! is negative, DTBT is set based only on information available at
                                 ! initialization.  If 0, DTBT will be set every dynamics time step. The default
@@ -166,15 +166,15 @@ HOMOGENIZE_FORCINGS = False     !   [Boolean] default = False
 ! === module MOM_domains ===
 REENTRANT_X = False             !   [Boolean] default = True
                                 ! If true, the domain is zonally reentrant.
-REENTRANT_Y = False             !   [Boolean] default = False
+REENTRANT_Y = True              !   [Boolean] default = False
                                 ! If true, the domain is meridionally reentrant.
 TRIPOLAR_N = False              !   [Boolean] default = False
                                 ! Use tripolar connectivity at the northern edge of the domain.  With
                                 ! TRIPOLAR_N, NIGLOBAL must be even.
-NIGLOBAL = 240                  !
+NIGLOBAL = 70                   !
                                 ! The total number of thickness grid points in the x-direction in the physical
                                 ! domain. With STATIC_MEMORY_ this is set in MOM_memory.h at compile time.
-NJGLOBAL = 40                   !
+NJGLOBAL = 150                  !
                                 ! The total number of thickness grid points in the y-direction in the physical
                                 ! domain. With STATIC_MEMORY_ this is set in MOM_memory.h at compile time.
 NIHALO = 4                      ! default = 4
@@ -213,16 +213,16 @@ AXIS_UNITS = "k"                ! default = "degrees"
 SOUTHLAT = 0.0                  !   [k]
                                 ! The southern latitude of the domain or the equivalent starting value for the
                                 ! y-axis.
-LENLAT = 80.0                   !   [k]
+LENLAT = 300.0                  !   [k]
                                 ! The latitudinal or y-direction length of the domain.
 WESTLON = 320.0                 !   [k] default = 0.0
                                 ! The western longitude of the domain or the equivalent starting value for the
                                 ! x-axis.
-LENLON = 480.0                  !   [k]
+LENLON = 140.0                  !   [k]
                                 ! The longitudinal or x-direction length of the domain.
 RAD_EARTH = 6.378E+06           !   [m] default = 6.378E+06
                                 ! The radius of the Earth.
-TOPO_CONFIG = "ISOMIP"          !
+TOPO_CONFIG = "flat"            !
                                 ! This specifies how bathymetry is specified:
                                 !     file - read bathymetric information from the file
                                 !       specified by (TOPO_FILE).
@@ -249,13 +249,9 @@ TOPO_CONFIG = "ISOMIP"          !
                                 !     Phillips - ACC-like idealized topography used in the Phillips config.
                                 !     dense - Denmark Strait-like dense water formation and overflow.
                                 !     USER - call a user modified routine.
-
-! === module ISOMIP_initialize_topography ===
 MINIMUM_DEPTH = 1.0             !   [m] default = 0.0
                                 ! The minimum depth of the ocean.
-ISOMIP_2D = False               !   [Boolean] default = False
-                                ! If true, use a 2D setup.
-MAXIMUM_DEPTH = 720.0           !   [m]
+MAXIMUM_DEPTH = 3600.0          !   [m]
                                 ! The maximum depth of the ocean.
 
 ! === module MOM_open_boundary ===
@@ -310,7 +306,7 @@ ANGSTROM = 1.0E-15              !   [m] default = 1.0E-10
                                 ! The minimum layer thickness, usually one-Angstrom.
 H_TO_M = 1.0                    !   [m H-1] default = 1.0
                                 ! A constant that translates the model's internal units of thickness into m.
-NK = 25                         !   [nondim]
+NK = 3                          !   [nondim]
                                 ! The number of model layers.
 
 ! === module MOM_tracer_registry ===
@@ -384,7 +380,7 @@ USE_NW2_TRACERS = False         !   [Boolean] default = False
                                 ! If true, use the NeverWorld2 tracers.
 
 ! === module MOM_coord_initialization ===
-COORD_CONFIG = "linear"         ! default = "none"
+COORD_CONFIG = "layer_ref"      ! default = "none"
                                 ! This specifies how layers are to be defined:
                                 !     ALE or none - used to avoid defining layers in ALE mode
                                 !     file - read coordinate information from the file
@@ -402,12 +398,12 @@ COORD_CONFIG = "linear"         ! default = "none"
                                 !     ts_profile - use temperature and salinity profiles
                                 !       (read from COORD_FILE) to set layer densities.
                                 !     USER - call a user modified routine.
-LIGHTEST_DENSITY = 1027.1524    !   [kg m-3] default = 1027.0
-                                ! The reference potential density used for the surface interface.
-DENSITY_RANGE = 0.7438856       !   [kg m-3] default = 2.0
-                                ! The range of reference potential densities across all interfaces.
 GFS = 9.8                       !   [m s-2] default = 9.8
                                 ! The reduced gravity at the free surface.
+LIGHTEST_DENSITY = 1027.1524    !   [kg m-3] default = 1027.0
+                                ! The reference potential density used for layer 1.
+DENSITY_RANGE = 0.7438856       !   [kg m-3] default = 2.0
+                                ! The range of reference potential densities in the layers.
 
 ! === module MOM_domains min_halo ===
 
@@ -418,8 +414,6 @@ GFS = 9.8                       !   [m s-2] default = 9.8
 ! Sets the horizontal array index types.
 
 ! === module MOM_grid_init ===
-
-! === module ISOMIP_initialize_topography ===
 MOM_ICESHELF_AVAILABLE_DIAGS_FILE = "MOM_IceShelf.available_diags" ! default = "MOM_IceShelf.available_diags"
                                 ! A file into which to write a list of all available ice shelf diagnostics that
                                 ! can be included in a diag_table.
@@ -500,7 +494,7 @@ USTAR_SHELF_FROM_VEL = True     !   [Boolean] default = True
 ICE_PROFILE_CONFIG = "FILE"     !
                                 ! This specifies how the initial ice profile is specified. Valid values are:
                                 ! CHANNEL, FILE, and USER.
-ICE_THICKNESS_FILE = "Ocean1_3D.nc" ! default = "ice_shelf_h.nc"
+ICE_THICKNESS_FILE = "00_Ocean1_3D.nc" ! default = "ice_shelf_h.nc"
                                 ! The file from which the bathymetry is read.
 LEN_SIDE_STRESS = 0.0           !   [axis_units] default = 0.0
                                 ! position past which shelf sides are stress free.
@@ -519,7 +513,7 @@ FATAL_INCONSISTENT_RESTART_TIME = False !   [Boolean] default = False
 INIT_LAYERS_FROM_Z_FILE = False !   [Boolean] default = False
                                 ! If true, initialize the layer thicknesses, temperatures, and salinities from a
                                 ! Z-space file on a latitude-longitude grid.
-THICKNESS_CONFIG = "ISOMIP"     ! default = "uniform"
+THICKNESS_CONFIG = "thickness_file" ! default = "uniform"
                                 ! A string that determines how the initial layer thicknesses are specified for a
                                 ! new run:
                                 !     file - read interface heights from the file specified
@@ -546,16 +540,8 @@ THICKNESS_CONFIG = "ISOMIP"     ! default = "uniform"
                                 !     soliton - Equatorial Rossby soliton.
                                 !     rossby_front - a mixed layer front in thermal wind balance.
                                 !     USER - call a user modified routine.
-MIN_THICKNESS = 1.0E-12         !   [m] default = 0.001
-                                ! Minimum layer thickness
-ISOMIP_T_SUR = -1.9             !   [degC] default = -1.9
-                                ! Temperature at the surface (interface)
-ISOMIP_S_SUR = 33.8             !   [ppt] default = 33.8
-                                ! Salinity at the surface (interface)
-ISOMIP_T_BOT = -1.9             !   [degC] default = -1.9
-                                ! Temperature at the bottom (interface)
-ISOMIP_S_BOT = 34.55            !   [ppt] default = 34.55
-                                ! Salinity at the bottom (interface)
+THICKNESS_FILE = "00_InitThickness.nc" !
+                                ! The name of the thickness file.
 TS_CONFIG = "fit"               !
                                 ! A string that determines how the initial tempertures and salinities are
                                 ! specified for a new run:
@@ -605,20 +591,52 @@ CONVERT_THICKNESS_UNITS = False !   [Boolean] default = False
                                 ! If true,  convert the thickness initial conditions from units of m to kg m-2
                                 ! or vice versa, depending on whether BOUSSINESQ is defined. This does not apply
                                 ! if a restart file is read.
-SURFACE_PRESSURE_FILE = "Ocean1_3D.nc" !
+SURFACE_PRESSURE_FILE = "00_Ocean1_3D.nc" !
                                 ! The initial condition file for the surface pressure exerted by ice.
 SURFACE_PRESSURE_VAR = "thick"  ! default = ""
                                 ! The initial condition variable for the surface pressure exerted by ice.
 SURFACE_PRESSURE_SCALE = 8820.0 !   [file dependent] default = 1.0
                                 ! A scaling factor to convert SURFACE_PRESSURE_VAR from file
                                 ! SURFACE_PRESSURE_FILE into a surface pressure.
+MIN_THICKNESS = 1.0E-12         !   [m] default = 0.001
+                                ! Minimum layer thickness
 TRIMMING_USES_REMAPPING = False !   [Boolean] default = False
                                 ! When trimming the column, also remap T and S.
 ODA_INCUPD = False              !   [Boolean] default = False
                                 ! If true, oda incremental updates will be applied everywhere in the domain.
-SPONGE = False                  !   [Boolean] default = False
+SPONGE = True                   !   [Boolean] default = False
                                 ! If true, sponges may be applied anywhere in the domain. The exact location and
                                 ! properties of those sponges are specified via SPONGE_CONFIG.
+SPONGE_CONFIG = "file"          ! default = "file"
+                                ! A string that sets how the sponges are configured:
+                                !     file - read sponge properties from the file
+                                !       specified by (SPONGE_FILE).
+                                !     ISOMIP - apply ale sponge in the ISOMIP case
+                                !     RGC - apply sponge in the rotating_gravity_current case
+                                !     DOME - use a slope and channel configuration for the
+                                !       DOME sill-overflow test case.
+                                !     BFB - Sponge at the southern boundary of the domain
+                                !       for buoyancy-forced basin case.
+                                !     USER - call a user modified routine.
+SPONGE_DAMPING_FILE = "00_SPONGE_DAMPING_FILE.nc" !
+                                ! The name of the file with the sponge damping rates.
+SPONGE_STATE_FILE = "00_SPONGE_DAMPING_FILE.nc" ! default = "00_SPONGE_DAMPING_FILE.nc"
+                                ! The name of the file with the state to damp toward.
+SPONGE_PTEMP_VAR = "PTEMP"      ! default = "PTEMP"
+                                ! The name of the potential temperature variable in SPONGE_STATE_FILE.
+SPONGE_SALT_VAR = "SALT"        ! default = "SALT"
+                                ! The name of the salinity variable in SPONGE_STATE_FILE.
+SPONGE_UV = False               !   [Boolean] default = False
+                                ! Apply sponges in u and v, in addition to tracers.
+SPONGE_ETA_VAR = "ETA"          ! default = "ETA"
+                                ! The name of the interface height variable in SPONGE_STATE_FILE.
+SPONGE_IDAMP_VAR = "Idamp"      ! default = "Idamp"
+                                ! The name of the inverse damping rate variable in SPONGE_DAMPING_FILE.
+INTERPOLATE_SPONGE_TIME_SPACE = False !   [Boolean] default = False
+                                ! If True, perform on-the-fly regridding in lat-lon-time of sponge restoring
+                                ! data.
+!Total sponge columns = 10500   !
+                                ! The total number of columns where sponges are applied.
 
 ! === module MOM_diag_mediator ===
 NUM_DIAG_COORDS = 1             ! default = 1
@@ -649,7 +667,7 @@ DIAG_AS_CHKSUM = False          !   [Boolean] default = False
 AVAILABLE_DIAGS_FILE = "available_diags.000000" ! default = "available_diags.000000"
                                 ! A file into which to write a list of all available ocean diagnostics that can
                                 ! be included in a diag_table.
-DIAG_COORD_DEF_Z = "UNIFORM"    ! default = "UNIFORM"
+DIAG_COORD_DEF_Z = "WOA09"      ! default = "WOA09"
                                 ! Determines how to specify the coordinate resolution. Valid options are:
                                 !  PARAM       - use the vector-parameter DIAG_COORD_RES_Z
                                 !  UNIFORM[:N] - uniformly distributed
@@ -912,7 +930,7 @@ UPWIND_1ST_CONTINUITY = False   !   [Boolean] default = False
                                 ! If true, CONTINUITY_PPM becomes a 1st-order upwind continuity solver.  This
                                 ! scheme is highly diffusive but may be useful for debugging or in single-column
                                 ! mode where its minimal stencil is useful.
-ETA_TOLERANCE = 1.0E-12         !   [m] default = 1.25E-14
+ETA_TOLERANCE = 1.0E-12         !   [m] default = 1.5E-15
                                 ! The tolerance for the differences between the barotropic and baroclinic
                                 ! estimates of the sea surface height due to the fluxes through each face.  The
                                 ! total tolerance for SSH is 4 times this value.  The default is
@@ -1631,7 +1649,7 @@ DATE_STAMPED_STDOUT = False     !   [Boolean] default = True
                                 ! If true, use dates (not times) in messages to stdout
 TIMEUNIT = 8.64E+04             !   [s] default = 8.64E+04
                                 ! The time unit in seconds a number of input fields
-ENERGYSAVEDAYS = 0.125          !   [days] default = 1.0
+ENERGYSAVEDAYS = 0.05           !   [days] default = 1.0
                                 ! The interval in units of TIMEUNIT between saves of the energies of the run and
                                 ! other globally summed diagnostics.
 ENERGYSAVEDAYS_GEOMETRIC = 0.0  !   [days] default = 0.0
@@ -1682,7 +1700,7 @@ USE_WAVES = False               !   [Boolean] default = False
                                 ! If true, enables surface wave modules.
 
 ! === module MOM_main (MOM_driver) ===
-DAYMAX = 10.0                   !   [days]
+DAYMAX = 2.0                    !   [days]
                                 ! The final time of the whole simulation, in units of TIMEUNIT seconds.  This
                                 ! also sets the potential end time of the present run segment if the end time is
                                 ! not set via ocean_solo_nml in input.nml.

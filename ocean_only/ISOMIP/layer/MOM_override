@@ -1,1 +1,28 @@
+#override NIGLOBAL = 70
+#override NJGLOBAL = 150
+#override MINIMUM_DEPTH = 1.0
+#override MAXIMUM_DEPTH = 3600.0
+#override NK = 3
+#override THICKNESS_CONFIG = "thickness_file"
+#override SPONGE_CONFIG = "file"
+#override SPONGE_DAMPING_FILE = "00_SPONGE_DAMPING_FILE.nc"
+#override THICKNESS_FILE = "00_InitThickness.nc"
+#override ICE_THICKNESS_FILE = "00_Ocean1_3D.nc" 
+#override SURFACE_PRESSURE_FILE = "00_Ocean1_3D.nc" 
+#override TOPO_CONFIG = "flat"
+#override COORD_CONFIG = "layer_ref"
+#override ENABLE_THERMODYNAMICS = True
+#override DT_FORCING = 300.0
+#override DAYMAX = 2.0
+#override SPONGE = True
+#override DT = 10
+#override ENERGYSAVEDAYS = 0.05
+#override LENLAT = 300
+#override LENLON = 140
+#override REENTRANT_X = False
+#override REENTRANT_Y = True
+!#override F_0 =  -2.817412450119954E-5 !! F = 1/5 F_0
+#override F_0 = -1.408706225059977E-04 
+
+
 ! Blank file in which we can put "overrides" for parameters

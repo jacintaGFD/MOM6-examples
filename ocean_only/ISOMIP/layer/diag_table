@@ -11,6 +11,7 @@
 #"ML_TKE_%4yr_%3dy",   5,"days",1,"days","Time",10,"days"
 "forcing_%4yr_%3dy",  2,"hours",1,"days","Time",10,"days"
 
+
 "ocean_model","dv_dt_visc","dv_dt_visc","mom_%4yr_%3dy","all",.true.,"none",2
 "ocean_model","du_dt_visc","du_dt_visc","mom_%4yr_%3dy","all",.true.,"none",2
 "ocean_model","PFu","PFu","mom_%4yr_%3dy","all",.true.,"none",2
@@ -61,6 +62,13 @@
 
 # Prognostic Ocean fields:
 #=========================
+
+### I added the following
+## cg1 = gravity wave speed
+"ocean_model","cg1","cg1","prog_%4yr_%3dy","all",.false.,"none",2
+## Rd1 = rossby deformation radius
+"ocean_model","Rd1","Rd1","prog_%4yr_%3dy","all",.false.,"none",2
+#####
 
 "ocean_model","u","u","prog_%4yr_%3dy","all",.false.,"none",2
 "ocean_model","v","v","prog_%4yr_%3dy","all",.false.,"none",2
